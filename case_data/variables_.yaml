@@ -165,7 +165,7 @@ log:
 message:
   set_channels_of_message_template:
     channelIds:
-      - "inbox"
+      - inbox
     messageTemplateId:
     tenantId:
 
@@ -358,3 +358,61 @@ feature_pack:
     - id: admin:umc-channel-close:page
     - id: admin:umc-channel-set_template:page
         
+
+
+
+material:
+  create_scm_material_signal:
+    name:
+    no:
+    srmUsageStatus: FREEZE
+    wmsUsageStatus: FREEZE
+
+unit:
+  create_scm_unit:
+    name:
+    abbreviation:
+    numDigits:
+    remark:
+
+currency:
+  create_currency_data:
+    name:
+    no:
+
+reason:
+  create_reason_data:
+    no:
+    explain:
+    reasonType: GIVEBACK
+
+partner:
+  create_partner_data:
+    abbreviation: 伙伴简称
+    companyAddr:
+      address: 滨江大道35号
+      area: 西城区
+      city: 市辖区
+      country: 中国
+      province: 北京市
+    contactList:
+    - fixedPhone: 固定电话
+    - isPrimaryContact: true
+    - name: 主联系人
+    - phone: 手机号码
+    - position: 职位
+    - remark: 联系人备注
+    creditCode: 信用代码
+    defaultCurrency:
+      id: 7429f34b-3b44-4a3f-bc93-1b70d8a29a28
+    expectedAt:
+      start: 1668355200000
+      end: 1668614399999
+    licenseCode: 营业执照
+    name: 业务伙伴全称
+    no: 业务伙伴编码
+    partnerType:
+    - CUSTOMER
+    - SUPPLIER
+    remark: 基本信息备注
+    
