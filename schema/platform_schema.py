@@ -115,6 +115,11 @@ class DeleteThingLimitedReason(sgqlc.types.Enum):
     __choices__ = ('THING_BORROW', 'THING_CALIBRATE', 'THING_INSPECTION', 'THING_INVENTORY', 'THING_MAINTENANCE')
 
 
+class Density(sgqlc.types.Enum):
+    __schema__ = platform_schema
+    __choices__ = ('DENSE', 'SPARSE', 'STANDARD')
+
+
 class DifferenceResult(sgqlc.types.Enum):
     __schema__ = platform_schema
     __choices__ = ('ADDED', 'REMOVED')
@@ -181,6 +186,11 @@ class EamWorkflowReviewerRelativeLevel(sgqlc.types.Enum):
 
 
 Float = sgqlc.types.Float
+
+class FontSize(sgqlc.types.Enum):
+    __schema__ = platform_schema
+    __choices__ = ('EXTRA_LARGE', 'LARGE', 'MEDIUM', 'MINI', 'SMALL')
+
 
 class Granularity(sgqlc.types.Enum):
     __schema__ = platform_schema
@@ -649,6 +659,11 @@ class UCCScope(sgqlc.types.Enum):
     __choices__ = ('COMPANY', 'PLATFORM')
 
 
+class UnreadMessageStyle(sgqlc.types.Enum):
+    __schema__ = platform_schema
+    __choices__ = ('DOT', 'NUMBER')
+
+
 class UserInfoRequestMethod(sgqlc.types.Enum):
     __schema__ = platform_schema
     __choices__ = ('GET', 'POST')
@@ -660,15 +675,32 @@ class Void(sgqlc.types.Scalar):
     __schema__ = platform_schema
 
 
+class WatermarkContent(sgqlc.types.Enum):
+    __schema__ = platform_schema
+    __choices__ = ('ACCOUNT', 'CURRENT_DATE', 'JOB_NUMBER', 'LAST_FOUR_PHONE_NUMBER', 'NAME', 'PLATFORM_NAME', 'TENANT_NAME')
+
+
+class WatermarkDirection(sgqlc.types.Enum):
+    __schema__ = platform_schema
+    __choices__ = ('HORIZONTAL', 'ROTATE')
+
+
+class WatermarkScope(sgqlc.types.Enum):
+    __schema__ = platform_schema
+    __choices__ = ('ALL', 'APPS', 'NONE')
+
+
 
 ########################################################################
 # Input Objects
 ########################################################################
 class AccountListFilterInput(sgqlc.types.Input):
     __schema__ = platform_schema
-    __field_names__ = ('include_children_organizations', 'is_allowed_to_login', 'organizations', 'roles', 'search', 'search_by')
+    __field_names__ = ('exclude', 'include_children_organizations', 'is_allowed_to_login', 'job_status', 'organizations', 'roles', 'search', 'search_by')
+    exclude = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('IDInput')), graphql_name='exclude')
     include_children_organizations = sgqlc.types.Field(Boolean, graphql_name='includeChildrenOrganizations')
     is_allowed_to_login = sgqlc.types.Field(Boolean, graphql_name='isAllowedToLogin')
+    job_status = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(StaffJobStatus)), graphql_name='jobStatus')
     organizations = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('StringIDInput')), graphql_name='organizations')
     roles = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('StringIDInput')), graphql_name='roles')
     search = sgqlc.types.Field(String, graphql_name='search')
@@ -2424,11 +2456,12 @@ class PageListFilterInput(sgqlc.types.Input):
 
 class PartnerCompanyAddrInput(sgqlc.types.Input):
     __schema__ = platform_schema
-    __field_names__ = ('address', 'area', 'city', 'country', 'province')
+    __field_names__ = ('address', 'area', 'city', 'country', 'ids', 'province')
     address = sgqlc.types.Field(String, graphql_name='address')
     area = sgqlc.types.Field(String, graphql_name='area')
     city = sgqlc.types.Field(String, graphql_name='city')
     country = sgqlc.types.Field(String, graphql_name='country')
+    ids = sgqlc.types.Field(String, graphql_name='ids')
     province = sgqlc.types.Field(String, graphql_name='province')
 
 
@@ -2633,7 +2666,9 @@ class SaveThingCalibrateInput(sgqlc.types.Input):
 
 class ScmMaterialCategoryFilter(sgqlc.types.Input):
     __schema__ = platform_schema
-    __field_names__ = ('parent_id', 'search')
+    __field_names__ = ('include_children', 'include_parents', 'parent_id', 'search')
+    include_children = sgqlc.types.Field(Boolean, graphql_name='includeChildren')
+    include_parents = sgqlc.types.Field(Boolean, graphql_name='includeParents')
     parent_id = sgqlc.types.Field(String, graphql_name='parentId')
     search = sgqlc.types.Field(String, graphql_name='search')
 
@@ -2661,10 +2696,11 @@ class ScmMaterialSignalFilter(sgqlc.types.Input):
 
 class ScmUnitConversionFilter(sgqlc.types.Input):
     __schema__ = platform_schema
-    __field_names__ = ('base_unit', 'material', 'target_unit')
-    base_unit = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('StringIDInput')), graphql_name='baseUnit')
-    material = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('StringIDInput')), graphql_name='material')
-    target_unit = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('StringIDInput')), graphql_name='targetUnit')
+    __field_names__ = ('base_unit', 'material_name', 'material_no', 'target_unit')
+    base_unit = sgqlc.types.Field(String, graphql_name='baseUnit')
+    material_name = sgqlc.types.Field(String, graphql_name='materialName')
+    material_no = sgqlc.types.Field(String, graphql_name='materialNo')
+    target_unit = sgqlc.types.Field(String, graphql_name='targetUnit')
 
 
 class ScmUnitFilter(sgqlc.types.Input):
@@ -2899,6 +2935,19 @@ class SetTableFixedFieldsConfigInput(sgqlc.types.Input):
     company = sgqlc.types.Field(IDInput, graphql_name='company')
     fields = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('TableFixedFieldInput'))), graphql_name='fields')
     key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='key')
+
+
+class SetThemeInput(sgqlc.types.Input):
+    __schema__ = platform_schema
+    __field_names__ = ('content', 'density', 'direction', 'font_size', 'logo', 'platform_name', 'range', 'unread_message_style')
+    content = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(WatermarkContent))), graphql_name='content')
+    density = sgqlc.types.Field(sgqlc.types.non_null(Density), graphql_name='density')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(WatermarkDirection), graphql_name='direction')
+    font_size = sgqlc.types.Field(sgqlc.types.non_null(FontSize), graphql_name='fontSize')
+    logo = sgqlc.types.Field(IDInput, graphql_name='logo')
+    platform_name = sgqlc.types.Field(String, graphql_name='platformName')
+    range = sgqlc.types.Field(sgqlc.types.non_null('WatermarkRangeInput'), graphql_name='range')
+    unread_message_style = sgqlc.types.Field(sgqlc.types.non_null(UnreadMessageStyle), graphql_name='unreadMessageStyle')
 
 
 class SetThingAdministratorDepartmentInput(sgqlc.types.Input):
@@ -3234,8 +3283,10 @@ class SparePartUsageRecordInput(sgqlc.types.Input):
 
 class StaffListFilterInput(sgqlc.types.Input):
     __schema__ = platform_schema
-    __field_names__ = ('exclude_admin', 'include_children_organizations', 'job_status', 'job_type', 'organizations', 'search', 'search_by')
+    __field_names__ = ('exclude', 'exclude_admin', 'has_account', 'include_children_organizations', 'job_status', 'job_type', 'organizations', 'search', 'search_by')
+    exclude = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(IDInput)), graphql_name='exclude')
     exclude_admin = sgqlc.types.Field(Boolean, graphql_name='excludeAdmin')
+    has_account = sgqlc.types.Field(Boolean, graphql_name='hasAccount')
     include_children_organizations = sgqlc.types.Field(Boolean, graphql_name='includeChildrenOrganizations')
     job_status = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(StaffJobStatus)), graphql_name='jobStatus')
     job_type = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(StaffJobType)), graphql_name='jobType')
@@ -4776,7 +4827,7 @@ class UserFilterInput(sgqlc.types.Input):
 
 class UserListFilter(sgqlc.types.Input):
     __schema__ = platform_schema
-    __field_names__ = ('company', 'current_only', 'department', 'ids', 'is_active', 'role', 'search', 'search_name',  'uid')
+    __field_names__ = ('company', 'current_only', 'department', 'ids', 'is_active', 'role', 'search', 'search_name', 'uid')
     company = sgqlc.types.Field(IntIDInput, graphql_name='company')
     current_only = sgqlc.types.Field(Boolean, graphql_name='currentOnly')
     department = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(IntIDInput)), graphql_name='department')
@@ -4786,6 +4837,13 @@ class UserListFilter(sgqlc.types.Input):
     search = sgqlc.types.Field(String, graphql_name='search')
     search_name = sgqlc.types.Field(String, graphql_name='searchName')
     uid = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='uid')
+
+
+class WatermarkRangeInput(sgqlc.types.Input):
+    __schema__ = platform_schema
+    __field_names__ = ('app_ids', 'scope')
+    app_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='appIds')
+    scope = sgqlc.types.Field(sgqlc.types.non_null(WatermarkScope), graphql_name='scope')
 
 
 class WecomAppLoginInput(sgqlc.types.Input):
@@ -6036,7 +6094,7 @@ class MetaTemplateList(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = platform_schema
-    __field_names__ = ('_dummy', '_eam', 'abort_thing_inspection_schedule', 'abort_thing_maintenance_schedule', 'accept_tenant_certification', 'accept_thing_repair', 'activate_eam_form', 'active_message_channel', 'active_partner', 'add_account_roles', 'add_feature_pack_to_tenant', 'add_thing_transfer_records', 'add_thing_transfer_records_by_code', 'admin_unbind_dingding_user', 'admin_unbind_wecom_user', 'apply_for_tenant_certification', 'approve_thing_borrow', 'approve_thing_calibrate', 'assign_app_permissions', 'assign_tenant_apps', 'bind_my_email', 'bind_my_phone_number', 'bind_wecom_user', 'borrow_confirm_thing_borrow', 'cancel_spare_part_claim', 'change_my_password', 'change_my_password_by_email_verification', 'change_my_password_by_verify_code', 'company_login', 'configure_authentication_source_ldap3', 'configure_authentication_source_oauth2', 'configure_authentication_source_open_idconnect1', 'configure_authentication_source_saml2', 'confirm_borrow', 'confirm_borrow_by_thing', 'confirm_feature_pack', 'confirm_return', 'confirm_return_by_thing', 'confirm_spare_part_claim', 'copy_eam_form', 'copy_feature_pack', 'copy_thing_bar_label', 'create_account', 'create_app_version', 'create_calibrate_organization', 'create_calibrate_schedule', 'create_company_bidatasource', 'create_currency', 'create_eam_field', 'create_eam_file', 'create_eam_files', 'create_eam_spare_part_category', 'create_eam_spare_part_warehouse', 'create_eam_team', 'create_enterprise_app', 'create_feature_pack', 'create_file', 'create_files', 'create_image', 'create_images', 'create_inspection_method', 'create_maintenance_method', 'create_market_file', 'create_market_files', 'create_oauth2_authentication_configuration', 'create_open_idconnect1_authentication_configuration', 'create_organization', 'create_outside_calibrate', 'create_partner', 'create_reason', 'create_role', 'create_scm_material', 'create_scm_material_category', 'create_scm_material_signal', 'create_scm_unit', 'create_scm_unit_conversion', 'create_spare_part', 'create_spare_part_claim', 'create_spare_part_outbound', 'create_spare_part_receipt', 'create_spare_part_transfer', 'create_spare_part_usage_record', 'create_staff', 'create_tax_rate', 'create_tenant', 'create_tenant_owner', 'create_thing', 'create_thing_administrator_department', 'create_thing_area', 'create_thing_bar_label', 'create_thing_borrow', 'create_thing_calibrate', 'create_thing_calibrate_operator', 'create_thing_category', 'create_thing_complete_file_rule', 'create_thing_group', 'create_thing_inspection_schedule', 'create_thing_inventory_redundant_record', 'create_thing_inventory_ticket', 'create_thing_label', 'create_thing_maintenance_schedule', 'de_authorize_my_third_party_service', 'deactivate_message_channel', 'delete_account', 'delete_app_version', 'delete_authentication_configuration', 'delete_calibrate_organization', 'delete_calibrate_schedule', 'delete_company_bidatasource', 'delete_currency', 'delete_department_thing_groups', 'delete_eam_field', 'delete_eam_form', 'delete_eam_spare_part_category', 'delete_eam_spare_part_warehouse', 'delete_eam_team', 'delete_enterprise_apps', 'delete_feature_pack', 'delete_inspection_method', 'delete_maintenance_method', 'delete_organization', 'delete_outside_calibrate', 'delete_partner', 'delete_reason', 'delete_role', 'delete_scm_material', 'delete_scm_material_category', 'delete_scm_material_signal', 'delete_scm_unit', 'delete_scm_unit_conversion', 'delete_spare_part', 'delete_staff', 'delete_table_fields_config', 'delete_tax_rate', 'delete_tenant', 'delete_thing', 'delete_thing_area', 'delete_thing_bar_label', 'delete_thing_calibrate_operator', 'delete_thing_category', 'delete_thing_complete_file_rule', 'delete_thing_group', 'delete_thing_inventory_redundant_record', 'delete_thing_label', 'delete_user_thing_groups', 'disable_tenant', 'duplicate_uccform_structure', 'effective_tax_rate', 'enable_tenant', 'end_thing_inventory_ticket', 'expired_tax_rate', 'frozen_partner', 'generate_code', 'import_spare_part', 'import_thing', 'import_thing_area', 'import_thing_category', 'import_thing_label', 'import_thing_spare_part', 'issue_spare_part_claim', 'login', 'login_by_email', 'login_by_phone_number', 'logout', 'mark_certification_result_notified', 'move_things', 'offline_app_version', 'online_app_version', 'operate_spare_part_claim', 'operate_thing_borrow', 'operate_thing_maintenance', 'operate_thing_repair', 'pass_thing_inventory_record', 'read_all_inbox_messages', 'read_inbox_messages', 'record_thing_inspection', 'record_thing_maintenance', 'rehire_staff', 'reject_tenant_certification', 'reject_thing_borrow', 'reject_thing_calibrate', 'remove_account_roles', 'remove_calibrate_thing_category', 'remove_feature_pack_subscription', 'remove_thing_administrator_department', 'remove_thing_function_department', 'replace_feature_pack_subscription', 'replace_thing_borrow', 'report_thing_inspection', 'report_thing_maintenance', 'report_thing_repair', 'reset_account_password', 'reset_app_client_secret', 'reset_authentication_source', 'reset_tenant_owner_password', 'resign_staff', 'return_confirm_thing_borrow', 'save_thing_calibrate', 'send_identity_verify_code_to_email', 'send_identity_verify_code_to_my_phone_number', 'send_identity_verify_code_to_phone_number', 'send_identity_verify_code_to_un_verified_phone_number', 'set_admin_users', 'set_authorization_rules_data_range_of_role', 'set_authorization_rules_to_role', 'set_calibrate_thing_category', 'set_channels_of_message_template', 'set_code_rule_configuration', 'set_company_thing_department_scope', 'set_default_currency', 'set_department_thing_group', 'set_departments_thing_group', 'set_eam_field_to_eam_form', 'set_eam_form_structure', 'set_eam_form_thing_category', 'set_eam_spare_part_form_structure', 'set_eam_spare_part_warehouse_manager', 'set_evasion_config', 'set_login_config_to_my_tenant', 'set_login_modes_to_tenant', 'set_message_channel_kinds_to_tenant', 'set_meta_templates_to_tenant', 'set_organization_level_config', 'set_organization_staffs', 'set_organizations_level', 'set_outside_calibrate_thing_calibrate', 'set_permissions_to_feature_pack', 'set_permissions_to_tenant', 'set_role_accounts', 'set_single_department_thing_groups', 'set_single_user_thing_groups', 'set_spare_part_stock_configuration', 'set_spare_part_thing', 'set_spare_part_workflow_configuration', 'set_stared_pages', 'set_sub_thing', 'set_table_column_setting', 'set_table_fields_config', 'set_table_fixed_fields_config', 'set_thing_administrator_department', 'set_thing_borrow_range_configuration', 'set_thing_borrow_workflow_configuration', 'set_thing_calibrate', 'set_thing_calibrate_range_configuration', 'set_thing_calibrate_workflow_configuration', 'set_thing_function_department', 'set_thing_inspection_workflow_configuration', 'set_thing_inventory_record', 'set_thing_inventory_record_by_thing', 'set_thing_maintenance_workflow_configuration', 'set_thing_repair', 'set_thing_repair_workflow_configuration', 'set_thing_spare_part', 'set_uccform_structure', 'set_uccstack_data', 'set_users_thing_group', 'set_workbench', 'sign_up_tenant', 'star_app', 'star_pages', 'start_thing_inspection', 'start_thing_inventory_ticket', 'start_thing_maintenance', 'submit_thing_borrow', 'submit_thing_calibrate', 'track_thing_inventory_ticket', 'transfer_organization', 'transfer_tenant_owner', 'turn_to_thing_calibrate', 'turn_to_thing_inspection', 'turn_to_thing_inventory_record', 'turn_to_thing_maintenance', 'turn_to_thing_repair', 'un_assign_app_permissions', 'un_assign_tenant_apps', 'un_star_app', 'un_star_pages', 'unbind_dingding_user', 'unbind_email_of_users', 'unbind_my_email', 'unbind_my_phone_number', 'unbind_phone_number_of_users', 'unbind_wecom_user', 'unset_admin_users', 'update_account', 'update_app_version', 'update_authorization_rule', 'update_calibrate_organization', 'update_calibrate_schedule', 'update_currency', 'update_department_thing_group', 'update_eam_field', 'update_eam_spare_part_category', 'update_eam_spare_part_warehouse', 'update_eam_team', 'update_enterprise_app', 'update_feature_pack', 'update_feature_pack_subscription', 'update_inspection_method', 'update_maintenance_method', 'update_me', 'update_oauth2_authentication_configuration', 'update_open_idconnect1_authentication_configuration', 'update_organization', 'update_outside_calibrate', 'update_partner', 'update_reason', 'update_role', 'update_scm_material', 'update_scm_material_category', 'update_scm_material_signal', 'update_scm_unit', 'update_scm_unit_conversion', 'update_spare_part', 'update_spare_part_claim', 'update_staff', 'update_tenant', 'update_thing', 'update_thing_area', 'update_thing_bar_label', 'update_thing_borrow', 'update_thing_by_code', 'update_thing_calibrate_operator', 'update_thing_category', 'update_thing_complete_file_rule', 'update_thing_function_departments', 'update_thing_group', 'update_thing_inspection', 'update_thing_inventory_redundant_record', 'update_thing_inventory_ticket', 'update_thing_label', 'update_thing_maintenance', 'update_things', 'update_user_thing_group', 'use_spare_part_claim', 'visit_app', 'visit_menu', 'wecom_app_login', 'wecom_login', 'withdraw_thing_inspection', 'withdraw_thing_inventory_ticket', 'withdraw_thing_repair', 'writeoff_spare_part_receipt')
+    __field_names__ = ('_dummy', '_eam', 'abort_thing_inspection_schedule', 'abort_thing_maintenance_schedule', 'accept_tenant_certification', 'accept_thing_repair', 'activate_eam_form', 'active_message_channel', 'active_partner', 'add_account_roles', 'add_feature_pack_to_tenant', 'add_thing_transfer_records', 'add_thing_transfer_records_by_code', 'admin_unbind_dingding_user', 'admin_unbind_wecom_user', 'apply_for_tenant_certification', 'approve_thing_borrow', 'approve_thing_calibrate', 'assign_app_permissions', 'assign_tenant_apps', 'bind_my_email', 'bind_my_phone_number', 'bind_wecom_user', 'borrow_confirm_thing_borrow', 'cancel_spare_part_claim', 'change_my_password', 'change_my_password_by_email_verification', 'change_my_password_by_verify_code', 'company_login', 'configure_authentication_source_ldap3', 'configure_authentication_source_oauth2', 'configure_authentication_source_open_idconnect1', 'configure_authentication_source_saml2', 'confirm_borrow', 'confirm_borrow_by_thing', 'confirm_feature_pack', 'confirm_return', 'confirm_return_by_thing', 'confirm_spare_part_claim', 'copy_eam_form', 'copy_feature_pack', 'copy_thing_bar_label', 'create_account', 'create_app_version', 'create_calibrate_organization', 'create_calibrate_schedule', 'create_company_bidatasource', 'create_currency', 'create_eam_field', 'create_eam_file', 'create_eam_files', 'create_eam_spare_part_category', 'create_eam_spare_part_warehouse', 'create_eam_team', 'create_enterprise_app', 'create_feature_pack', 'create_file', 'create_files', 'create_image', 'create_images', 'create_inspection_method', 'create_maintenance_method', 'create_market_file', 'create_market_files', 'create_oauth2_authentication_configuration', 'create_open_idconnect1_authentication_configuration', 'create_organization', 'create_outside_calibrate', 'create_partner', 'create_reason', 'create_role', 'create_scm_material', 'create_scm_material_category', 'create_scm_material_signal', 'create_scm_unit', 'create_scm_unit_conversion', 'create_spare_part', 'create_spare_part_claim', 'create_spare_part_outbound', 'create_spare_part_receipt', 'create_spare_part_transfer', 'create_spare_part_usage_record', 'create_staff', 'create_tax_rate', 'create_tenant', 'create_tenant_owner', 'create_thing', 'create_thing_administrator_department', 'create_thing_area', 'create_thing_bar_label', 'create_thing_borrow', 'create_thing_calibrate', 'create_thing_calibrate_operator', 'create_thing_category', 'create_thing_complete_file_rule', 'create_thing_group', 'create_thing_inspection_schedule', 'create_thing_inventory_redundant_record', 'create_thing_inventory_ticket', 'create_thing_label', 'create_thing_maintenance_schedule', 'de_authorize_my_third_party_service', 'deactivate_message_channel', 'delete_account', 'delete_app_version', 'delete_authentication_configuration', 'delete_calibrate_organization', 'delete_calibrate_schedule', 'delete_company_bidatasource', 'delete_currency', 'delete_department_thing_groups', 'delete_eam_field', 'delete_eam_form', 'delete_eam_spare_part_category', 'delete_eam_spare_part_warehouse', 'delete_eam_team', 'delete_enterprise_apps', 'delete_feature_pack', 'delete_inspection_method', 'delete_maintenance_method', 'delete_organization', 'delete_outside_calibrate', 'delete_partner', 'delete_reason', 'delete_role', 'delete_scm_material', 'delete_scm_material_category', 'delete_scm_material_signal', 'delete_scm_unit', 'delete_scm_unit_conversion', 'delete_spare_part', 'delete_staff', 'delete_table_fields_config', 'delete_tax_rate', 'delete_tenant', 'delete_thing', 'delete_thing_area', 'delete_thing_bar_label', 'delete_thing_calibrate_operator', 'delete_thing_category', 'delete_thing_complete_file_rule', 'delete_thing_group', 'delete_thing_inventory_redundant_record', 'delete_thing_label', 'delete_user_thing_groups', 'disable_tenant', 'duplicate_uccform_structure', 'effective_tax_rate', 'enable_tenant', 'end_thing_inventory_ticket', 'expired_tax_rate', 'frozen_partner', 'generate_code', 'import_spare_part', 'import_thing', 'import_thing_area', 'import_thing_category', 'import_thing_label', 'import_thing_spare_part', 'issue_spare_part_claim', 'login', 'login_by_email', 'login_by_phone_number', 'logout', 'mark_certification_result_notified', 'move_things', 'offline_app_version', 'online_app_version', 'operate_spare_part_claim', 'operate_thing_borrow', 'operate_thing_maintenance', 'operate_thing_repair', 'pass_thing_inventory_record', 'read_all_inbox_messages', 'read_inbox_messages', 'record_thing_inspection', 'record_thing_maintenance', 'rehire_staff', 'reject_tenant_certification', 'reject_thing_borrow', 'reject_thing_calibrate', 'remove_account_roles', 'remove_calibrate_thing_category', 'remove_feature_pack_subscription', 'remove_thing_administrator_department', 'remove_thing_function_department', 'replace_feature_pack_subscription', 'replace_thing_borrow', 'report_thing_inspection', 'report_thing_maintenance', 'report_thing_repair', 'reset_account_password', 'reset_app_client_secret', 'reset_authentication_source', 'reset_tenant_owner_password', 'resign_staff', 'return_confirm_thing_borrow', 'save_thing_calibrate', 'send_identity_verify_code_to_email', 'send_identity_verify_code_to_my_phone_number', 'send_identity_verify_code_to_phone_number', 'send_identity_verify_code_to_un_verified_phone_number', 'set_admin_users', 'set_authorization_rules_data_range_of_role', 'set_authorization_rules_to_role', 'set_calibrate_thing_category', 'set_channels_of_message_template', 'set_code_rule_configuration', 'set_company_thing_department_scope', 'set_default_currency', 'set_department_thing_group', 'set_departments_thing_group', 'set_eam_field_to_eam_form', 'set_eam_form_structure', 'set_eam_form_thing_category', 'set_eam_spare_part_form_structure', 'set_eam_spare_part_warehouse_manager', 'set_evasion_config', 'set_login_config_to_my_tenant', 'set_login_modes_to_tenant', 'set_message_channel_kinds_to_tenant', 'set_meta_templates_to_tenant', 'set_organization_level_config', 'set_organization_staffs', 'set_organizations_level', 'set_outside_calibrate_thing_calibrate', 'set_permissions_to_feature_pack', 'set_permissions_to_tenant', 'set_role_accounts', 'set_single_department_thing_groups', 'set_single_user_thing_groups', 'set_spare_part_stock_configuration', 'set_spare_part_thing', 'set_spare_part_workflow_configuration', 'set_stared_pages', 'set_sub_thing', 'set_table_column_setting', 'set_table_fields_config', 'set_table_fixed_fields_config', 'set_theme_of_my_tenant', 'set_thing_administrator_department', 'set_thing_borrow_range_configuration', 'set_thing_borrow_workflow_configuration', 'set_thing_calibrate', 'set_thing_calibrate_range_configuration', 'set_thing_calibrate_workflow_configuration', 'set_thing_function_department', 'set_thing_inspection_workflow_configuration', 'set_thing_inventory_record', 'set_thing_inventory_record_by_thing', 'set_thing_maintenance_workflow_configuration', 'set_thing_repair', 'set_thing_repair_workflow_configuration', 'set_thing_spare_part', 'set_uccform_structure', 'set_uccstack_data', 'set_users_thing_group', 'set_workbench', 'sign_up_tenant', 'star_app', 'star_pages', 'start_thing_inspection', 'start_thing_inventory_ticket', 'start_thing_maintenance', 'submit_thing_borrow', 'submit_thing_calibrate', 'track_thing_inventory_ticket', 'transfer_organization', 'transfer_tenant_owner', 'turn_to_thing_calibrate', 'turn_to_thing_inspection', 'turn_to_thing_inventory_record', 'turn_to_thing_maintenance', 'turn_to_thing_repair', 'un_assign_app_permissions', 'un_assign_tenant_apps', 'un_star_app', 'un_star_pages', 'unbind_dingding_user', 'unbind_email_of_users', 'unbind_my_email', 'unbind_my_phone_number', 'unbind_phone_number_of_users', 'unbind_wecom_user', 'unset_admin_users', 'update_account', 'update_app_version', 'update_authorization_rule', 'update_calibrate_organization', 'update_calibrate_schedule', 'update_currency', 'update_department_thing_group', 'update_eam_field', 'update_eam_spare_part_category', 'update_eam_spare_part_warehouse', 'update_eam_team', 'update_enterprise_app', 'update_feature_pack', 'update_feature_pack_subscription', 'update_inspection_method', 'update_maintenance_method', 'update_me', 'update_oauth2_authentication_configuration', 'update_open_idconnect1_authentication_configuration', 'update_organization', 'update_outside_calibrate', 'update_partner', 'update_reason', 'update_role', 'update_scm_material', 'update_scm_material_category', 'update_scm_material_signal', 'update_scm_unit', 'update_scm_unit_conversion', 'update_spare_part', 'update_spare_part_claim', 'update_staff', 'update_tenant', 'update_thing', 'update_thing_area', 'update_thing_bar_label', 'update_thing_borrow', 'update_thing_by_code', 'update_thing_calibrate_operator', 'update_thing_category', 'update_thing_complete_file_rule', 'update_thing_function_departments', 'update_thing_group', 'update_thing_inspection', 'update_thing_inventory_redundant_record', 'update_thing_inventory_ticket', 'update_thing_label', 'update_thing_maintenance', 'update_things', 'update_user_thing_group', 'use_spare_part_claim', 'visit_app', 'visit_menu', 'wecom_app_login', 'wecom_login', 'withdraw_thing_inspection', 'withdraw_thing_inventory_ticket', 'withdraw_thing_repair', 'writeoff_spare_part_receipt')
     _dummy = sgqlc.types.Field(Boolean, graphql_name='_dummy')
     _eam = sgqlc.types.Field(Boolean, graphql_name='_eam')
     abort_thing_inspection_schedule = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='abortThingInspectionSchedule', args=sgqlc.types.ArgDict((
@@ -6531,8 +6589,8 @@ class Mutation(sgqlc.types.Type):
         ('ids', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='ids', default=None)),
 ))
     )
-    delete_scm_material = sgqlc.types.Field(Boolean, graphql_name='deleteScmMaterial', args=sgqlc.types.ArgDict((
-        ('id', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='id', default=None)),
+    delete_scm_material = sgqlc.types.Field(sgqlc.types.non_null('ScmDeleteResult'), graphql_name='deleteScmMaterial', args=sgqlc.types.ArgDict((
+        ('ids', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='ids', default=None)),
 ))
     )
     delete_scm_material_category = sgqlc.types.Field(Boolean, graphql_name='deleteScmMaterialCategory', args=sgqlc.types.ArgDict((
@@ -6995,6 +7053,10 @@ class Mutation(sgqlc.types.Type):
     )
     set_table_fixed_fields_config = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='setTableFixedFieldsConfig', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(SetTableFixedFieldsConfigInput), graphql_name='input', default=None)),
+))
+    )
+    set_theme_of_my_tenant = sgqlc.types.Field(Boolean, graphql_name='setThemeOfMyTenant', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(SetThemeInput), graphql_name='input', default=None)),
 ))
     )
     set_thing_administrator_department = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='setThingAdministratorDepartment', args=sgqlc.types.ArgDict((
@@ -7530,11 +7592,12 @@ class Partner(sgqlc.types.Type):
 
 class PartnerCompanyAddr(sgqlc.types.Type):
     __schema__ = platform_schema
-    __field_names__ = ('address', 'area', 'city', 'country', 'province')
+    __field_names__ = ('address', 'area', 'city', 'country', 'ids', 'province')
     address = sgqlc.types.Field(String, graphql_name='address')
     area = sgqlc.types.Field(String, graphql_name='area')
     city = sgqlc.types.Field(String, graphql_name='city')
     country = sgqlc.types.Field(String, graphql_name='country')
+    ids = sgqlc.types.Field(String, graphql_name='ids')
     province = sgqlc.types.Field(String, graphql_name='province')
 
 
@@ -7602,7 +7665,7 @@ class PushSchedule(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = platform_schema
-    __field_names__ = ('log_list', '_eam', 'account', 'account_exists', 'account_list', 'admin_account_list', 'all_authorization_rules_of_role', 'apis', 'app_groups', 'app_menu_list', 'app_version_exists', 'app_version_list', 'assignable_login_modes_of_tenant', 'assignable_message_channel_kinds_of_tenant', 'assignable_meta_template_list_of_tenant', 'assignable_permissions_of_my_tenant', 'assignable_permissions_of_tenant', 'assigned_permissions_of_app', 'authentication_configuration', 'authentication_source', 'authorization_rule_and_dependencies', 'authorization_rule_dependent_by', 'bi_issue_issue', 'calibrate_organization', 'calibrate_organization_list', 'calibrate_schedule', 'calibrate_schedule_list', 'can_replace_thing_list', 'check_alter_department_thing_group', 'check_delete_department', 'children_of_department', 'cities', 'city_companies', 'code_rule_configuration', 'companies', 'company_bidatasource_list', 'company_bidatasource_tree', 'company_thing_calibrate_configuration', 'company_thing_department_scope', 'company_thing_group_tree', 'counties', 'countries', 'currency', 'currency_list', 'currency_no_exist', 'current_spare_part_claim_operation_list', 'current_thing_borrow_transitions', 'current_thing_calibrate_operation_list', 'current_thing_inspection_operation_list', 'current_thing_maintenance_operation_list', 'current_thing_repair_operation_list', 'data_value_source', 'department_by_id_and_level', 'department_list', 'department_thing_administrator_list', 'department_thing_groups', 'department_tree', 'dependency_of_permissions', 'dept_user_thing_groups', 'eam_field', 'eam_field_inter_list', 'eam_field_list', 'eam_field_summary', 'eam_file_list', 'eam_form_by_thing_category', 'eam_form_list', 'eam_form_structure', 'eam_spare_part_category', 'eam_spare_part_category_list', 'eam_spare_part_category_tree', 'eam_spare_part_category_tree_nodes', 'eam_spare_part_form_structure', 'eam_spare_part_warehouse', 'eam_spare_part_warehouse_list', 'eam_spare_part_warehouse_manager', 'eam_team', 'eam_team_list', 'evasion_config', 'export_spare_part', 'export_spare_part_claim_list', 'export_spare_part_outbound_list', 'export_spare_part_receipt_list', 'export_spare_part_transfer_list', 'export_thing', 'export_thing_inventory_record', 'export_thing_inventory_track_record', 'feature_pack', 'feature_pack_list', 'feature_pack_subscriptions_of_tenant', 'get_default_currency', 'inbox_message', 'inbox_message_list', 'inspection_method', 'inspection_method_list', 'is_calibrate_organization_exists', 'is_calibrate_schedule_exists', 'is_create_app_version_allowed', 'is_eam_field_exists', 'is_eam_form_exists', 'is_eam_spare_part_category_exists', 'is_eam_spare_part_warehouse_exists', 'is_eam_team_exists', 'is_email_exists', 'is_email_verified', 'is_exist_thing_circulation', 'is_feature_pack_exists', 'is_inspection_method_exists', 'is_maintenance_method_exists', 'is_outside_calibrate_exists', 'is_permission_changed_of_latest_app_version', 'is_phone_number_exists', 'is_phone_number_verified', 'is_spare_part_exists', 'is_staff_job_number_exists', 'is_thing_area_code_exists', 'is_thing_area_exists', 'is_thing_bar_label_exists', 'is_thing_category_code_exists', 'is_thing_category_exists', 'is_thing_contain', 'is_thing_exists', 'is_thing_inspection_schedule_exists', 'is_thing_inventory_ticket_exists', 'is_thing_label_exists', 'is_thing_maintenance_schedule_exists', 'last_custom_level_organizations', 'login_config_of_my_tenant', 'login_config_of_tenant_code', 'login_configuration', 'maintenance_method', 'maintenance_method_list', 'me', 'menu_visit_history_list', 'message_channels_of_my_tenant', 'message_template_list_of_my_tenant', 'message_template_list_of_tenant', 'meta_template', 'meta_template_list', 'my_app_list', 'my_backlog_groups', 'my_mobile_app_list', 'my_stared_page', 'my_tenant', 'my_tenant_app_list', 'my_tenant_development_app_list', 'my_tenant_feature_pack_subscriptions', 'my_thing_group', 'my_thing_inventory_record_list', 'ordinary_staff_app_list_of_my_tenant', 'organization', 'organization_by_code', 'organization_by_id_and_level', 'organization_code_exists', 'organization_level_config', 'organization_list', 'organization_name_exists_in_siblings', 'organization_tree_nodes', 'outside_calibrate', 'outside_calibrate_list', 'page_list', 'partner_list', 'partner_no_exist', 'permissions', 'permissions_of_feature_packs', 'permissions_of_my_tenant', 'permissions_of_tenant', 'provinces', 'reason_list', 'reason_no_exist', 'recent_app', 'role', 'role_list', 'role_name_exists', 'root_organization', 'sap_thing_code_history_list', 'scm_material_category_list', 'scm_material_category_name_exist', 'scm_material_category_no_exist', 'scm_material_list', 'scm_material_no_exist', 'scm_material_signal_list', 'scm_material_signal_no_exist', 'scm_unit_conversion_exist', 'scm_unit_conversion_list', 'scm_unit_list', 'scm_unit_name_exist', 'spare_part', 'spare_part_claim', 'spare_part_claim_list', 'spare_part_claim_record', 'spare_part_import_template', 'spare_part_list', 'spare_part_outbound', 'spare_part_outbound_item_list', 'spare_part_outbound_list', 'spare_part_outbound_summary', 'spare_part_receipt', 'spare_part_receipt_item_list', 'spare_part_receipt_list', 'spare_part_receipt_writeoff_list', 'spare_part_stock_configuration', 'spare_part_stock_list', 'spare_part_stock_record_list', 'spare_part_transfer', 'spare_part_transfer_item_list', 'spare_part_transfer_list', 'spare_part_usage_record_list', 'spare_part_workflow_configuration', 'staff_list', 'stared_apps', 'sub_thing_list', 'system_log_action', 'system_log_list', 'table_column_setting', 'table_fields_config', 'table_fixed_fields_config', 'tax_rate_exist', 'tax_rate_list', 'tenant', 'tenant_app_list', 'tenant_code_exists', 'tenant_industry_tree_nodes', 'tenant_list', 'tenant_name_exists', 'tenant_uscc_exists', 'thing', 'thing_administrator_list', 'thing_area', 'thing_area_import_template', 'thing_area_list', 'thing_area_tree', 'thing_bar_label', 'thing_bar_label_list', 'thing_borrow', 'thing_borrow_list', 'thing_borrow_operator_record_list', 'thing_borrow_range_configuration', 'thing_borrow_relate_resource_list', 'thing_borrow_status_overview', 'thing_borrow_workflow_configuration', 'thing_by_code', 'thing_by_qr_code', 'thing_calibrate', 'thing_calibrate_list', 'thing_calibrate_operator', 'thing_calibrate_operator_department', 'thing_calibrate_operator_list', 'thing_calibrate_range_configuration', 'thing_calibrate_record_list', 'thing_calibrate_relate_resource_list', 'thing_calibrate_workflow_configuration', 'thing_category', 'thing_category_import_template', 'thing_category_list', 'thing_category_tree', 'thing_category_tree_nodes', 'thing_circulation_list', 'thing_circulation_overview', 'thing_complete_file_rule_list', 'thing_function_department', 'thing_function_department_list', 'thing_group', 'thing_group_depts', 'thing_group_list', 'thing_group_tree', 'thing_group_users', 'thing_import_template', 'thing_inspection', 'thing_inspection_list', 'thing_inspection_operator_record_list', 'thing_inspection_relate_resource_list', 'thing_inspection_schedule', 'thing_inspection_schedule_list', 'thing_inspection_status_overview', 'thing_inspection_workflow_configuration', 'thing_inventory_record', 'thing_inventory_record_list', 'thing_inventory_redundant_record', 'thing_inventory_redundant_record_list', 'thing_inventory_relate_resource_list', 'thing_inventory_ticket', 'thing_inventory_ticket_list', 'thing_inventory_track_record', 'thing_inventory_track_record_list', 'thing_inventory_track_redundant_record', 'thing_inventory_track_redundant_record_list', 'thing_is_lent_overview', 'thing_label', 'thing_label_import_template', 'thing_label_list', 'thing_list', 'thing_maintenance', 'thing_maintenance_list', 'thing_maintenance_operator_record_list', 'thing_maintenance_relate_resource_list', 'thing_maintenance_schedule', 'thing_maintenance_schedule_list', 'thing_maintenance_status_overview', 'thing_maintenance_workflow_configuration', 'thing_on_state_overview', 'thing_relate_resource_list', 'thing_repair', 'thing_repair_list', 'thing_repair_operator_record_list', 'thing_repair_relate_resource_list', 'thing_repair_status_overview', 'thing_repair_workflow_configuration', 'thing_spare_part_import_template', 'thing_transfer_record_list', 'things', 'third_party_service_configs_of_my_tenant', 'ucc_form_structure', 'ucc_form_structure_json_schema', 'ucc_stack_data', 'unread_message_apps', 'upload_config', 'upload_configs', 'validate_spare_part_excel', 'validate_thing_area_excel', 'validate_thing_category_excel', 'validate_thing_excel', 'validate_thing_label_excel', 'validate_thing_spare_part_excel', 'workbench', 'workbench_card_data', 'workbench_card_option')
+    __field_names__ = ('log_list', '_eam', 'account', 'account_exists', 'account_list', 'admin_account_list', 'all_authorization_rules_of_role', 'apis', 'app_groups', 'app_menu_list', 'app_version_exists', 'app_version_list', 'assignable_login_modes_of_tenant', 'assignable_message_channel_kinds_of_tenant', 'assignable_meta_template_list_of_tenant', 'assignable_permissions_of_my_tenant', 'assignable_permissions_of_tenant', 'assigned_permissions_of_app', 'authentication_configuration', 'authentication_source', 'authorization_rule_and_dependencies', 'authorization_rule_dependent_by', 'bi_issue_issue', 'calibrate_organization', 'calibrate_organization_list', 'calibrate_schedule', 'calibrate_schedule_list', 'can_replace_thing_list', 'check_alter_department_thing_group', 'check_delete_department', 'children_of_department', 'cities', 'city_companies', 'code_rule_configuration', 'companies', 'company_bidatasource_list', 'company_bidatasource_tree', 'company_thing_calibrate_configuration', 'company_thing_department_scope', 'company_thing_group_tree', 'counties', 'countries', 'currency', 'currency_list', 'currency_name_exist', 'currency_no_exist', 'current_spare_part_claim_operation_list', 'current_thing_borrow_transitions', 'current_thing_calibrate_operation_list', 'current_thing_inspection_operation_list', 'current_thing_maintenance_operation_list', 'current_thing_repair_operation_list', 'data_value_source', 'department_by_id_and_level', 'department_list', 'department_thing_administrator_list', 'department_thing_groups', 'department_tree', 'dependency_of_permissions', 'dept_user_thing_groups', 'eam_field', 'eam_field_inter_list', 'eam_field_list', 'eam_field_summary', 'eam_file_list', 'eam_form_by_thing_category', 'eam_form_list', 'eam_form_structure', 'eam_spare_part_category', 'eam_spare_part_category_list', 'eam_spare_part_category_tree', 'eam_spare_part_category_tree_nodes', 'eam_spare_part_form_structure', 'eam_spare_part_warehouse', 'eam_spare_part_warehouse_list', 'eam_spare_part_warehouse_manager', 'eam_team', 'eam_team_list', 'evasion_config', 'export_spare_part', 'export_spare_part_claim_list', 'export_spare_part_outbound_list', 'export_spare_part_receipt_list', 'export_spare_part_transfer_list', 'export_thing', 'export_thing_inventory_record', 'export_thing_inventory_track_record', 'feature_pack', 'feature_pack_list', 'feature_pack_subscriptions_of_tenant', 'get_default_currency', 'inbox_message', 'inbox_message_list', 'inspection_method', 'inspection_method_list', 'is_calibrate_organization_exists', 'is_calibrate_schedule_exists', 'is_create_app_version_allowed', 'is_eam_field_exists', 'is_eam_form_exists', 'is_eam_spare_part_category_exists', 'is_eam_spare_part_warehouse_exists', 'is_eam_team_exists', 'is_email_exists', 'is_email_verified', 'is_exist_thing_circulation', 'is_feature_pack_exists', 'is_inspection_method_exists', 'is_maintenance_method_exists', 'is_outside_calibrate_exists', 'is_permission_changed_of_latest_app_version', 'is_phone_number_exists', 'is_phone_number_verified', 'is_spare_part_exists', 'is_staff_job_number_exists', 'is_thing_area_code_exists', 'is_thing_area_exists', 'is_thing_bar_label_exists', 'is_thing_category_code_exists', 'is_thing_category_exists', 'is_thing_contain', 'is_thing_exists', 'is_thing_inspection_schedule_exists', 'is_thing_inventory_ticket_exists', 'is_thing_label_exists', 'is_thing_maintenance_schedule_exists', 'last_custom_level_organizations', 'login_config_of_my_tenant', 'login_config_of_tenant_code', 'login_configuration', 'maintenance_method', 'maintenance_method_list', 'me', 'menu_visit_history_list', 'message_channels_of_my_tenant', 'message_template_list_of_my_tenant', 'message_template_list_of_tenant', 'meta_template', 'meta_template_list', 'my_app_list', 'my_backlog_groups', 'my_mobile_app_list', 'my_stared_page', 'my_tenant', 'my_tenant_app_list', 'my_tenant_development_app_list', 'my_tenant_feature_pack_subscriptions', 'my_thing_group', 'my_thing_inventory_record_list', 'ordinary_staff_app_list_of_my_tenant', 'organization', 'organization_by_code', 'organization_by_id_and_level', 'organization_code_exists', 'organization_level_config', 'organization_list', 'organization_name_exists_in_siblings', 'organization_tree_nodes', 'outside_calibrate', 'outside_calibrate_list', 'page_list', 'partner_credit_code_exist', 'partner_license_code_exist', 'partner_list', 'partner_no_exist', 'permissions', 'permissions_of_feature_packs', 'permissions_of_my_tenant', 'permissions_of_tenant', 'provinces', 'reason_list', 'reason_no_exist', 'recent_app', 'relative_organizations_by_id_and_level', 'role', 'role_list', 'role_name_exists', 'root_organization', 'sap_thing_code_history_list', 'scm_material_category_list', 'scm_material_category_name_exist', 'scm_material_category_no_exist', 'scm_material_list', 'scm_material_no_exist', 'scm_material_signal_list', 'scm_material_signal_no_exist', 'scm_unit_conversion_exist', 'scm_unit_conversion_list', 'scm_unit_list', 'scm_unit_name_exist', 'spare_part', 'spare_part_claim', 'spare_part_claim_list', 'spare_part_claim_record', 'spare_part_import_template', 'spare_part_list', 'spare_part_outbound', 'spare_part_outbound_item_list', 'spare_part_outbound_list', 'spare_part_outbound_summary', 'spare_part_receipt', 'spare_part_receipt_item_list', 'spare_part_receipt_list', 'spare_part_receipt_writeoff_list', 'spare_part_stock_configuration', 'spare_part_stock_list', 'spare_part_stock_record_list', 'spare_part_transfer', 'spare_part_transfer_item_list', 'spare_part_transfer_list', 'spare_part_usage_record_list', 'spare_part_workflow_configuration', 'staff_list', 'stared_apps', 'sub_thing_list', 'system_log_action', 'system_log_list', 'table_column_setting', 'table_fields_config', 'table_fixed_fields_config', 'tax_rate_exist', 'tax_rate_list', 'tenant', 'tenant_app_list', 'tenant_code_exists', 'tenant_industry_tree_nodes', 'tenant_list', 'tenant_name_exists', 'tenant_uscc_exists', 'theme_of_my_tenant', 'thing', 'thing_administrator_list', 'thing_area', 'thing_area_import_template', 'thing_area_list', 'thing_area_tree', 'thing_bar_label', 'thing_bar_label_list', 'thing_borrow', 'thing_borrow_list', 'thing_borrow_operator_record_list', 'thing_borrow_range_configuration', 'thing_borrow_relate_resource_list', 'thing_borrow_status_overview', 'thing_borrow_workflow_configuration', 'thing_by_code', 'thing_by_qr_code', 'thing_calibrate', 'thing_calibrate_list', 'thing_calibrate_operator', 'thing_calibrate_operator_department', 'thing_calibrate_operator_list', 'thing_calibrate_range_configuration', 'thing_calibrate_record_list', 'thing_calibrate_relate_resource_list', 'thing_calibrate_workflow_configuration', 'thing_category', 'thing_category_import_template', 'thing_category_list', 'thing_category_tree', 'thing_category_tree_nodes', 'thing_circulation_list', 'thing_circulation_overview', 'thing_complete_file_rule_list', 'thing_function_department', 'thing_function_department_list', 'thing_group', 'thing_group_depts', 'thing_group_list', 'thing_group_tree', 'thing_group_users', 'thing_import_template', 'thing_inspection', 'thing_inspection_list', 'thing_inspection_operator_record_list', 'thing_inspection_relate_resource_list', 'thing_inspection_schedule', 'thing_inspection_schedule_list', 'thing_inspection_status_overview', 'thing_inspection_workflow_configuration', 'thing_inventory_record', 'thing_inventory_record_list', 'thing_inventory_redundant_record', 'thing_inventory_redundant_record_list', 'thing_inventory_relate_resource_list', 'thing_inventory_ticket', 'thing_inventory_ticket_list', 'thing_inventory_track_record', 'thing_inventory_track_record_list', 'thing_inventory_track_redundant_record', 'thing_inventory_track_redundant_record_list', 'thing_is_lent_overview', 'thing_label', 'thing_label_import_template', 'thing_label_list', 'thing_list', 'thing_maintenance', 'thing_maintenance_list', 'thing_maintenance_operator_record_list', 'thing_maintenance_relate_resource_list', 'thing_maintenance_schedule', 'thing_maintenance_schedule_list', 'thing_maintenance_status_overview', 'thing_maintenance_workflow_configuration', 'thing_on_state_overview', 'thing_relate_resource_list', 'thing_repair', 'thing_repair_list', 'thing_repair_operator_record_list', 'thing_repair_relate_resource_list', 'thing_repair_status_overview', 'thing_repair_workflow_configuration', 'thing_spare_part_import_template', 'thing_transfer_record_list', 'things', 'third_party_service_configs_of_my_tenant', 'ucc_form_structure', 'ucc_form_structure_json_schema', 'ucc_stack_data', 'unread_message_apps', 'upload_config', 'upload_configs', 'validate_spare_part_excel', 'validate_thing_area_excel', 'validate_thing_category_excel', 'validate_thing_excel', 'validate_thing_label_excel', 'validate_thing_spare_part_excel', 'workbench', 'workbench_card_data', 'workbench_card_option')
     log_list = sgqlc.types.Field(sgqlc.types.non_null('LogList'), graphql_name='LogList', args=sgqlc.types.ArgDict((
         ('filter', sgqlc.types.Arg(LogListFilterInput, graphql_name='filter', default=None)),
         ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=None)),
@@ -7804,6 +7867,10 @@ class Query(sgqlc.types.Type):
         ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=None)),
         ('offset', sgqlc.types.Arg(Int, graphql_name='offset', default=None)),
         ('order_by', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='orderBy', default=None)),
+))
+    )
+    currency_name_exist = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='currencyNameExist', args=sgqlc.types.ArgDict((
+        ('name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='name', default=None)),
 ))
     )
     currency_no_exist = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='currencyNoExist', args=sgqlc.types.ArgDict((
@@ -8321,6 +8388,14 @@ class Query(sgqlc.types.Type):
         ('order_by', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='orderBy', default=None)),
 ))
     )
+    partner_credit_code_exist = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='partnerCreditCodeExist', args=sgqlc.types.ArgDict((
+        ('credit_code', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='creditCode', default=None)),
+))
+    )
+    partner_license_code_exist = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='partnerLicenseCodeExist', args=sgqlc.types.ArgDict((
+        ('license_code', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='licenseCode', default=None)),
+))
+    )
     partner_list = sgqlc.types.Field(sgqlc.types.non_null(PartnerList), graphql_name='partnerList', args=sgqlc.types.ArgDict((
         ('filter', sgqlc.types.Arg(PartnerFilter, graphql_name='filter', default=None)),
         ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=None)),
@@ -8365,6 +8440,11 @@ class Query(sgqlc.types.Type):
     )
     recent_app = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(App))), graphql_name='recentApp', args=sgqlc.types.ArgDict((
         ('limit', sgqlc.types.Arg(sgqlc.types.non_null(Int), graphql_name='limit', default=None)),
+))
+    )
+    relative_organizations_by_id_and_level = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(Organization))), graphql_name='relativeOrganizationsByIdAndLevel', args=sgqlc.types.ArgDict((
+        ('ids', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='ids', default=None)),
+        ('level', sgqlc.types.Arg(sgqlc.types.non_null(Int), graphql_name='level', default=None)),
 ))
     )
     role = sgqlc.types.Field('Role', graphql_name='role', args=sgqlc.types.ArgDict((
@@ -8652,6 +8732,7 @@ class Query(sgqlc.types.Type):
         ('uscc', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='uscc', default=None)),
 ))
     )
+    theme_of_my_tenant = sgqlc.types.Field(sgqlc.types.non_null('Theme'), graphql_name='themeOfMyTenant')
     thing = sgqlc.types.Field('Thing', graphql_name='thing', args=sgqlc.types.ArgDict((
         ('id', sgqlc.types.Arg(sgqlc.types.non_null(ID), graphql_name='id', default=None)),
 ))
@@ -9133,10 +9214,11 @@ class RepairSparePartItem(sgqlc.types.Type):
 
 class Role(sgqlc.types.Type):
     __schema__ = platform_schema
-    __field_names__ = ('authorization_rules', 'created_at', 'description', 'id', 'name', 'updated_at', 'user_count')
+    __field_names__ = ('authorization_rules', 'created_at', 'description', 'has_authorization_rules', 'id', 'name', 'updated_at', 'user_count')
     authorization_rules = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(AuthorizationRule))), graphql_name='authorizationRules')
     created_at = sgqlc.types.Field(sgqlc.types.non_null(Timestamp), graphql_name='createdAt')
     description = sgqlc.types.Field(String, graphql_name='description')
+    has_authorization_rules = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasAuthorizationRules')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     updated_at = sgqlc.types.Field(sgqlc.types.non_null(Timestamp), graphql_name='updatedAt')
@@ -9195,9 +9277,8 @@ class ScmMaterial(sgqlc.types.Type):
 
 class ScmMaterialCategory(sgqlc.types.Type):
     __schema__ = platform_schema
-    __field_names__ = ('id', 'level', 'name', 'no', 'parent_id', 'path')
+    __field_names__ = ('id', 'name', 'no', 'parent_id', 'path')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
-    level = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='level')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     no = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='no')
     parent_id = sgqlc.types.Field(String, graphql_name='parentId')
@@ -9754,6 +9835,20 @@ class TenantList(sgqlc.types.Type):
     __field_names__ = ('data', 'total_count')
     data = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(Tenant))), graphql_name='data')
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class Theme(sgqlc.types.Type):
+    __schema__ = platform_schema
+    __field_names__ = ('content', 'density', 'direction', 'font_size', 'id', 'logo', 'platform_name', 'range', 'unread_message_style')
+    content = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(WatermarkContent))), graphql_name='content')
+    density = sgqlc.types.Field(sgqlc.types.non_null(Density), graphql_name='density')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(WatermarkDirection), graphql_name='direction')
+    font_size = sgqlc.types.Field(sgqlc.types.non_null(FontSize), graphql_name='fontSize')
+    id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
+    logo = sgqlc.types.Field(Image, graphql_name='logo')
+    platform_name = sgqlc.types.Field(String, graphql_name='platformName')
+    range = sgqlc.types.Field(sgqlc.types.non_null('WatermarkRange'), graphql_name='range')
+    unread_message_style = sgqlc.types.Field(sgqlc.types.non_null(UnreadMessageStyle), graphql_name='unreadMessageStyle')
 
 
 class Thing(sgqlc.types.Type):
@@ -11110,6 +11205,13 @@ class UserThingGroups(sgqlc.types.Type):
     __field_names__ = ('thing_groups', 'user')
     thing_groups = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ThingGroup)), graphql_name='thingGroups')
     user = sgqlc.types.Field(sgqlc.types.non_null(User), graphql_name='user')
+
+
+class WatermarkRange(sgqlc.types.Type):
+    __schema__ = platform_schema
+    __field_names__ = ('app_ids', 'scope')
+    app_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='appIds')
+    scope = sgqlc.types.Field(sgqlc.types.non_null(WatermarkScope), graphql_name='scope')
 
 
 class WecomUser(sgqlc.types.Type):

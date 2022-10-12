@@ -397,11 +397,11 @@ partner:
       province: 北京市
     contactList:
     - fixedPhone: 固定电话
-    - isPrimaryContact: true
-    - name: 主联系人
-    - phone: 手机号码
-    - position: 职位
-    - remark: 联系人备注
+      isPrimaryContact: True
+      name: 主联系人
+      phone: 手机号码
+      position: 职位
+      remark: '联系人备注'
     creditCode: 信用代码
     defaultCurrency:
       id: 7429f34b-3b44-4a3f-bc93-1b70d8a29a28
@@ -410,9 +410,11 @@ partner:
       end: 1668614399999
     licenseCode: 营业执照
     name: 业务伙伴全称
-    no: 业务伙伴编码
+
     partnerType:
     - CUSTOMER
     - SUPPLIER
     remark: 基本信息备注
     
+
+
