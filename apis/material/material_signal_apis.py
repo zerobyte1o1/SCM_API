@@ -10,6 +10,11 @@ from schema.platform_schema import *
 class MaterialSignal(GetTokenHeader):
 
     def create_scm_material_signal_api(self,variables):
+        """
+        创建物料信号
+        :param variables:
+        :return:
+        """
         endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
         op = Operation(Mutation)
         op.create_scm_material_signal(input=variables)
@@ -45,3 +50,37 @@ class MaterialSignal(GetTokenHeader):
         a = randint(0, signal_list.total_count - 1)
         res = signal_list.data[a].id
         return res
+
+    def update_scm_material_signal_api(self,variables):
+        """
+        更新物料信号
+        :param variables:
+        :return:
+        """
+        endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
+        op = Operation(Mutation)
+        op.update_scm_material_signal(input=variables)
+        data = endpoint(op)
+        try:
+            res = (op + data).update_scm_material_signal
+            return res
+        except:
+            res = data.get("errors")[0].get("message")
+            return res
+
+    def delete_scm_material_signal_api(self,ids):
+        """
+        删除物料信号
+        :param ids:
+        :return:
+        """
+        endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
+        op = Operation(Mutation)
+        op.delete_scm_material_signal(ids=ids)
+        data = endpoint(op)
+        try:
+            res = (op + data).delete_scm_material_signal
+            return res
+        except:
+            res = data.get("errors")[0].get("message")
+            return res

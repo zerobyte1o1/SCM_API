@@ -15,7 +15,15 @@ class MaterialCategoryData(BaseApi):
         variables = self.modify_variables(target_json=variables_temp, args=args)
         return variables
 
+    def update_scm_material_category_data(self,id):
+        args = list()
+        variables_temp = self.get_variables(module_name="material_category", variables_name="update_scm_material_category_data")
 
+        args.append(("name", self.mock.mock_data("类型")))
+        args.append(("no", self.mock.mock_data("b",3)))
+        args.append(("id", id))
+        variables = self.modify_variables(target_json=variables_temp, args=args)
+        return variables
 
 if __name__ == '__main__':
     m=MaterialCategory()

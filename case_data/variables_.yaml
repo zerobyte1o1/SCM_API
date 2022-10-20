@@ -375,6 +375,20 @@ material:
     name: 物料描述20
     no: 物料编码20
     specification: 规格60
+  update_scm_material_data:
+    category:
+      id: 9f0f0fe7-001b-4cff-92e0-78d3cb859e40
+    figureNo: 图号60
+    inventoryUnit:
+      id: 0da5770b-0c11-460f-a037-1ada625272e8
+    materialQuality: 材质60
+    materialSignal:
+      id: 57121c35-9ba0-4e2a-a40f-b5c0dfe7178c
+    materialType: PURCHASE
+    model: 型号60
+    name: 物料描述20
+    id:
+    specification: 规格60
     
 material_signal:
   create_scm_material_signal_data:
@@ -382,17 +396,33 @@ material_signal:
     no:
     srmUsageStatus: FREEZE
     wmsUsageStatus: FREEZE
+  update_scm_material_signal_data:
+    name:
+    id:
+    srmUsageStatus: NORMAL
+    wmsUsageStatus: NORMAL
+
 material_category:
   create_scm_material_category_data:
     name:
     no:
     parentId:
+  update_scm_material_category_data:
+    name:
+    no:
+    id:
+
 unit:
   create_scm_unit_data:
     name:
     abbreviation:
     numDigits:
     remark:
+  update_scm_unit_data:
+    abbreviation:
+    remark:
+    id:
+
 unit_conversion:
   create_scm_unit_conversion_data:
     baseRatio: 1
@@ -403,7 +433,16 @@ unit_conversion:
     targetRatio: 10
     targetUnit:
       id: 777bf2e7-a1e1-4a64-99f5-0d0224ec2d91
-      
+  update_scm_unit_conversion_data:
+    id:
+    baseRatio: 1
+    baseUnit:
+      id: 2db31156-6b89-45b6-8672-5a93dc8c5fc0
+    material:
+      id: c766bc83-bccf-4a76-b861-bda6ea118192
+    targetRatio: 10
+    targetUnit:
+      id: 777bf2e7-a1e1-4a64-99f5-0d0224ec2d91
     
 
 currency:

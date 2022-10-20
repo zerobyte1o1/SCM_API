@@ -46,6 +46,40 @@ class Unit(GetTokenHeader):
         res = unit_list.data[a].id
         return res
 
+    def update_scm_unit_api(self, variables):
+        """
+        更新单位
+        :param variables:
+        :return:
+        """
+        endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
+        op = Operation(Mutation)
+        op.update_scm_unit(input=variables)
+        data = endpoint(op)
+        try:
+            res = (op + data).update_scm_unit
+            return res
+        except:
+            res = data.get("errors")[0].get("message")
+            return res
+
+    def delete_scm_unit_api(self, ids):
+        """
+        删除单位
+        :param ids:
+        :return:
+        """
+        endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
+        op = Operation(Mutation)
+        op.delete_scm_unit(ids=ids)
+        data = endpoint(op)
+        try:
+            res = (op + data).delete_scm_unit
+            return res
+        except:
+            res = data.get("errors")[0].get("message")
+            return res
+
 
 if __name__ == '__main__':
     u = Unit()
