@@ -12,6 +12,13 @@ class ReasonData(BaseApi):
         variables = self.modify_variables(target_json=variables_temp, args=args)
         return variables
 
+    def update_reason_data(self,id):
+        args = list()
+        variables_temp = self.get_variables(module_name="reason", variables_name="update_reason_data")
+        args.append(("explain", self.faker.sentence()))
+        args.append(("id",id))
+        variables = self.modify_variables(target_json=variables_temp, args=args)
+        return variables
 
 if __name__ == '__main__':
     r=Reason()

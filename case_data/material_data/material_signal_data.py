@@ -6,7 +6,7 @@ class MaterialSignalData(BaseApi):
 
     def create_scm_material_signal_data(self):
         args = list()
-        variables_temp = self.get_variables(module_name="material", variables_name="create_scm_material_signal")
+        variables_temp = self.get_variables(module_name="material_signal", variables_name="create_scm_material_signal_data")
 
         args.append(("name", self.mock.mock_data("description")))
         args.append(("no", self.mock.mock_data("b",3)))

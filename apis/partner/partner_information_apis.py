@@ -8,6 +8,11 @@ from schema.platform_schema import *
 class PartnerInformation(GetTokenHeader):
 
     def create_partner_api(self, variables):
+        """
+        创建业务伙伴
+        :param variables:
+        :return:
+        """
         endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
         op = Operation(Mutation)
         op.create_partner(input=variables)

@@ -1,3 +1,5 @@
+from random import randint
+
 from sgqlc.endpoint.http import HTTPEndpoint
 from sgqlc.operation import Operation
 
@@ -18,3 +20,28 @@ class MaterialSignal(GetTokenHeader):
         except:
             res = data.get("errors")[0].get("message")
             return res
+
+    def scm_material_signal_list_api(self, args=None):
+        """
+        物料分类列表
+        :param args:
+        :return:
+        """
+        endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
+        op = Operation(Query)
+        scm_material_signal_list = op.scm_material_signal_list()
+        if args is not None:
+            scm_material_signal_list.__fields__(*args)
+        data = endpoint(op)
+        res = (op + data).scm_material_signal_list
+        return res
+
+    def random_material_signal_id(self):
+        """
+        随机取一个物料分类的id
+        :return:
+        """
+        signal_list = self.scm_material_signal_list_api()
+        a = randint(0, signal_list.total_count - 1)
+        res = signal_list.data[a].id
+        return res

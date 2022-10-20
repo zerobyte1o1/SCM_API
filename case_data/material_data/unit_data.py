@@ -6,9 +6,9 @@ class UnitData(BaseApi):
 
     def create_scm_unit_data(self):
         args = list()
-        variables_temp = self.get_variables(module_name="unit", variables_name="create_scm_unit")
+        variables_temp = self.get_variables(module_name="unit", variables_name="create_scm_unit_data")
         print(variables_temp)
-        args.append(("name", self.mock.mock_data("n",3)))
+        args.append(("name", self.mock.mock_data("单位",2)))
         args.append(("abbreviation", self.faker.random_element()+str(self.faker.random_digit())))
         args.append(("numDigits", self.faker.random_digit()))
         args.append(("remark", self.faker.sentence()))

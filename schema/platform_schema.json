@@ -8229,13 +8229,9 @@
               "defaultValue": null,
               "name": "category",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "StringIDInput",
-                  "ofType": null
-                }
+                "kind": "INPUT_OBJECT",
+                "name": "StringIDInput",
+                "ofType": null
               }
             },
             {
@@ -27982,13 +27978,36 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "SetThemeInput",
+                      "name": "SetThemeNavigationBarInput",
                       "ofType": null
                     }
                   }
                 }
               ],
-              "name": "setThemeOfMyTenant",
+              "name": "setThemeNavigationBarOfMyTenant",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "SetThemeWaterMarkInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "setThemeWaterMarkOfMyTenant",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -30923,6 +30942,15 @@
             {
               "defaultValue": "false",
               "name": "includeInvisible",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "isWatermarkSupported",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -39556,6 +39584,33 @@
               "args": [
                 {
                   "defaultValue": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "partner",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Partner",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
                   "name": "creditCode",
                   "type": {
                     "kind": "NON_NULL",
@@ -39876,6 +39931,33 @@
                     "name": "Province",
                     "ofType": null
                   }
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "reason",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Reason",
+                  "ofType": null
                 }
               }
             },
@@ -40215,6 +40297,60 @@
               "args": [
                 {
                   "defaultValue": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "scmMaterial",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ScmMaterial",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "scmMaterialCategory",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ScmMaterialCategory",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
                   "name": "filter",
                   "type": {
                     "kind": "INPUT_OBJECT",
@@ -40399,6 +40535,33 @@
               "args": [
                 {
                   "defaultValue": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "scmMaterialSignal",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ScmMaterialSignal",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
                   "name": "filter",
                   "type": {
                     "kind": "INPUT_OBJECT",
@@ -40476,6 +40639,60 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "scmUnit",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ScmUnit",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "scmUnitConversion",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ScmUnitConversion",
                   "ofType": null
                 }
               }
@@ -42010,6 +42227,33 @@
                       "ofType": null
                     }
                   }
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "taxRate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "TaxRate",
+                  "ofType": null
                 }
               }
             },
@@ -47100,13 +47344,9 @@
               "args": [],
               "name": "category",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ScmMaterialCategory",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "ScmMaterialCategory",
+                "ofType": null
               }
             },
             {
@@ -47273,6 +47513,19 @@
         {
           "enumValues": null,
           "fields": [
+            {
+              "args": [],
+              "name": "hasChild",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
             {
               "args": [],
               "name": "id",
@@ -49569,6 +49822,47 @@
           "inputFields": [
             {
               "defaultValue": null,
+              "name": "logo",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "IDInput",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "platformName",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "unreadMessageStyle",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "UnreadMessageStyle",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "SetThemeNavigationBarInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
               "name": "content",
               "type": {
                 "kind": "NON_NULL",
@@ -49629,24 +49923,6 @@
             },
             {
               "defaultValue": null,
-              "name": "logo",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "IDInput",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "name": "platformName",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
               "name": "range",
               "type": {
                 "kind": "NON_NULL",
@@ -49660,21 +49936,29 @@
             },
             {
               "defaultValue": null,
-              "name": "unreadMessageStyle",
+              "name": "selectedContent",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "ENUM",
-                  "name": "UnreadMessageStyle",
-                  "ofType": null
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "WatermarkContent",
+                      "ofType": null
+                    }
+                  }
                 }
               }
             }
           ],
           "interfaces": null,
           "kind": "INPUT_OBJECT",
-          "name": "SetThemeInput",
+          "name": "SetThemeWaterMarkInput",
           "possibleTypes": null
         },
         {
@@ -56972,6 +57256,27 @@
                   "kind": "OBJECT",
                   "name": "WatermarkRange",
                   "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "selectedContent",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "WatermarkContent",
+                      "ofType": null
+                    }
+                  }
                 }
               }
             },
@@ -78049,6 +78354,19 @@
             },
             {
               "args": [],
+              "name": "jobNumber",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "name",
               "type": {
                 "kind": "NON_NULL",
@@ -78816,7 +79134,7 @@
           "fields": [
             {
               "args": [],
-              "name": "appIds",
+              "name": "appCodes",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -78857,7 +79175,7 @@
           "inputFields": [
             {
               "defaultValue": null,
-              "name": "appIds",
+              "name": "appCodes",
               "type": {
                 "kind": "LIST",
                 "name": null,

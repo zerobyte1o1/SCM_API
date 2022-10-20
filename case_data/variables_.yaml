@@ -360,31 +360,68 @@ feature_pack:
         
 
 
-
 material:
-  create_scm_material_signal:
+  create_scm_material_data:
+    category:
+      id: 9f0f0fe7-001b-4cff-92e0-78d3cb859e40
+    figureNo: 图号60
+    inventoryUnit:
+      id: 0da5770b-0c11-460f-a037-1ada625272e8
+    materialQuality: 材质60
+    materialSignal:
+      id: 57121c35-9ba0-4e2a-a40f-b5c0dfe7178c
+    materialType: PURCHASE
+    model: 型号60
+    name: 物料描述20
+    no: 物料编码20
+    specification: 规格60
+    
+material_signal:
+  create_scm_material_signal_data:
     name:
     no:
     srmUsageStatus: FREEZE
     wmsUsageStatus: FREEZE
-
+material_category:
+  create_scm_material_category_data:
+    name:
+    no:
+    parentId:
 unit:
-  create_scm_unit:
+  create_scm_unit_data:
     name:
     abbreviation:
     numDigits:
     remark:
+unit_conversion:
+  create_scm_unit_conversion_data:
+    baseRatio: 1
+    baseUnit:
+      id: 2db31156-6b89-45b6-8672-5a93dc8c5fc0
+    material:
+      id: c766bc83-bccf-4a76-b861-bda6ea118192
+    targetRatio: 10
+    targetUnit:
+      id: 777bf2e7-a1e1-4a64-99f5-0d0224ec2d91
+      
+    
 
 currency:
   create_currency_data:
     name:
     no:
+  update_currency_data:
+    name:
+    id:
 
 reason:
   create_reason_data:
     no:
     explain:
     reasonType: GIVEBACK
+  update_reason_data:
+    explain:
+      id:
 
 partner:
   create_partner_data:
@@ -410,7 +447,6 @@ partner:
       end: 1668614399999
     licenseCode: 营业执照
     name: 业务伙伴全称
-
     partnerType:
     - CUSTOMER
     - SUPPLIER
