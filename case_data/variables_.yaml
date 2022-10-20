@@ -432,6 +432,7 @@ partner:
       city: 市辖区
       country: 中国
       province: 北京市
+      ids: 156@110000000000@110100000000@110102000000
     contactList:
     - fixedPhone: 固定电话
       isPrimaryContact: True
@@ -452,5 +453,33 @@ partner:
     - SUPPLIER
     remark: 基本信息备注
     
-
+  update_partner_data:
+    id:
+    abbreviation: 伙伴简称
+    companyAddr:
+      address: 滨江大道35号
+      area: 西城区
+      city: 市辖区
+      country: 中国
+      province: 北京市
+      ids: 156@110000000000@110100000000@110102000000
+    contactList:
+    - fixedPhone: 固定电话
+      isPrimaryContact: True
+      name: 主联系人
+      phone: 手机号码
+      position: 职位
+      remark: '联系人备注'
+    creditCode: 信用代码
+    defaultCurrency:
+      id: 7429f34b-3b44-4a3f-bc93-1b70d8a29a28
+    expectedAt:
+      start: 1668355200000
+      end: 1668614399999
+    licenseCode: 营业执照
+    name: 业务伙伴全称
+    partnerType:
+    - CUSTOMER
+    - SUPPLIER
+    remark: 基本信息备注
 
