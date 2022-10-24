@@ -85,6 +85,23 @@ class Currency(GetTokenHeader):
             res = data.get("errors")[0].get("message")
             return res
 
+    def set_default_currency_api(self,id):
+        """
+        设置默认币种
+        :param id:
+        :return:
+        """
+        endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
+        op = Operation(Mutation)
+        op.set_default_currency(id=id)
+        data = endpoint(op)
+        try:
+            res = (op + data).set_default_currency
+            return res
+        except:
+            res = data.get("errors")[0].get("message")
+            return res
+
 if __name__ == '__main__':
     c = Currency()
     res = c.random_currency_id()

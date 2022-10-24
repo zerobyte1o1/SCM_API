@@ -3,19 +3,8 @@ import sys
 
 import pytest
 
-from apis.message_service.meta_template_apis import MetaTemplate
-from apis.platform_management.tenant_apis import Tenant
-from apis.management_center.account_apis import Account
-from case_data.management_center_data.account_data import AccountData
-from case_data.message_service.meta_template_data import MetaTemplateData
-from case_data.platform_management_data.tenant_data import TenantData
 
-data = AccountData()
-tenant = Tenant()
-account= Account()
-t_data = TenantData()
-meta_template = MetaTemplate()
-mt_data = MetaTemplateData()
+
 
 
 def pytest_collection_modifyitems(items):
