@@ -57,3 +57,11 @@ class Reason(GetTokenHeader):
         except:
             res = data.get("errors")[0].get("message")
             return res
+
+    def reason_list_api(self):
+        endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
+        op = Operation(Query)
+        op.reason_list()
+        data = endpoint(op)
+        res = (op + data).reason_list
+        return res

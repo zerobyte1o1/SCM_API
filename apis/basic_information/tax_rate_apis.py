@@ -67,6 +67,21 @@ class TaxRate(GetTokenHeader):
             res = data.get("errors")[0].get("message")
             return res
 
+    def tax_rate_list_api(self, search=None):
+        endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
+        op = Operation(Query)
+        filter = {}
+        if search is not None:
+            filter["search"] = str(search)
+        op.tax_rate_list(filter=filter)
+        data = endpoint(op)
+        try:
+            res = (op + data).tax_rate_list
+            return res
+        except:
+            res = data.get("errors")[0].get("message")
+            return res
+
 
 if __name__ == '__main__':
     t = TaxRate()
