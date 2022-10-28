@@ -7,10 +7,9 @@ from apis.material.material_signal_apis import MaterialSignal
 
 class MaterialData(BaseApi):
     def __init__(self):
-        pass
-        # self.category=MaterialCategory()
-        # self.unit=Unit()
-        # self.signal=MaterialSignal()
+        self.category=MaterialCategory()
+        self.unit=Unit()
+        self.signal=MaterialSignal()
 
     def create_scm_material_data(self):
         args = list()
