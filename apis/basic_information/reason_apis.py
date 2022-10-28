@@ -1,6 +1,5 @@
 from sgqlc.endpoint.http import HTTPEndpoint
 from sgqlc.operation import Operation
-
 from apis.base.get_token_headers import GetTokenHeader
 from schema.platform_schema import *
 
@@ -41,7 +40,7 @@ class Reason(GetTokenHeader):
             res = data.get("errors")[0].get("message")
             return res
 
-    def delete_reason_api(self,ids:list):
+    def delete_reason_api(self, ids: list):
         """
         删除原因
         :param ids: list

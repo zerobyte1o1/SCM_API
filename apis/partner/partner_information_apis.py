@@ -80,3 +80,27 @@ class PartnerInformation(GetTokenHeader):
         except:
             res = data.get("errors")[0].get("message")
             return res
+
+    def partner_list_api(self):
+        endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
+        op = Operation(Query)
+        op.partner_list()
+        data = endpoint(op)
+        try:
+            res = (op + data).partner_list
+            return res
+        except:
+            res = data.get("errors")[0].get("message")
+            return res
+
+    def delete_partner_api(self,ids):
+        endpoint = HTTPEndpoint(url=self.url, base_headers=self.headers)
+        op = Operation(Mutation)
+        op.delete_partner(ids=ids)
+        data = endpoint(op)
+        try:
+            res = (op + data).delete_partner
+            return res
+        except:
+            res = data.get("errors")[0].get("message")
+            return res

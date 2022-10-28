@@ -23,10 +23,10 @@ class PartnerInformationData(BaseApi):
         variables = self.modify_variables(target_json=variables_temp, args=args)
         return variables
 
-    def update_partner_data(self):
+    def update_partner_data(self,id):
         args = list()
         variables_temp = self.get_variables(module_name="partner", variables_name="update_partner_data")
-
+        args.append(("id",id))
         args.append(("abbreviation", self.faker.company_prefix()))
         args.append(("companyAddr:address", self.faker.street_address()))
         args.append(("contactList>0:phone", self.faker.phone_number()))

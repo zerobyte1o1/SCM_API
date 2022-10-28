@@ -1,8 +1,6 @@
 from random import randint
-
 from sgqlc.endpoint.http import HTTPEndpoint
 from sgqlc.operation import Operation
-
 from apis.base.get_token_headers import GetTokenHeader
 from schema.platform_schema import *
 
@@ -51,7 +49,7 @@ class Currency(GetTokenHeader):
         res = cur_list.data[a].id
         return res
 
-    def update_currency_api(self,input_data):
+    def update_currency_api(self, input_data):
         """
         更新一个币种
         :param input_data:
@@ -68,7 +66,7 @@ class Currency(GetTokenHeader):
             res = data.get("errors")[0].get("message")
             return res
 
-    def delete_currency_api(self,ids:list):
+    def delete_currency_api(self, ids: list):
         """
         删除币种
         :param ids:id 的列表
@@ -85,7 +83,7 @@ class Currency(GetTokenHeader):
             res = data.get("errors")[0].get("message")
             return res
 
-    def set_default_currency_api(self,id):
+    def set_default_currency_api(self, id):
         """
         设置默认币种
         :param id:
@@ -101,6 +99,7 @@ class Currency(GetTokenHeader):
         except:
             res = data.get("errors")[0].get("message")
             return res
+
 
 if __name__ == '__main__':
     c = Currency()

@@ -5,11 +5,10 @@ import time
 
 
 class Mock:
-    def mock_data(self, data_name: str,number=6):
+    def mock_data(self, data_name: str, number=6):
         ran_str = '_' + ''.join(random.sample(string.ascii_letters + string.digits, number))
         res = data_name + ran_str
         return res
-
 
     # 毫秒级时间戳
     def current_time(self):
